@@ -19,11 +19,126 @@ Este repositorio implementa una arquitectura de microservicios cloud-native util
 | Redis | redis:7.0-alpine | 6379 | Base de datos en memoria y cache |
 | Zipkin | openzipkin/zipkin:2.23.19 | 9411 | Distributed tracing |
 
-### Flujo de Datos
+## Diagrama de Arquitectura
+
+```mermaid
+graph TB
+    %% Cliente y API Gateway
+    Client[Cliente]
+    Gateway[API Gateway<br/>Nginx:1.29.1<br/>:80, :8888]
+    
+    %% Frontend
+    Frontend[Frontend<br/>Vue.js SPA<br/>:8080]
+    
+    %% Microservicios Backend
+    AuthAPI[Auth API<br/>Go + JWT<br/>:8000]
+    UsersAPI[Users API<br/>Spring Boot<br/>:8083]
+    TodosAPI[Todos API<br/>Node.js Express<br/>:8082]
+        
+    %% Procesador de Logs
+    LogProcessor[Log Processor<br/>Python<br/>Redis Consumer]
+    
+    %% Almacenamiento y Cache
+    Redis[(Redis<br/>Cache & Message Queue<br/>:6379)]
+    
+    %% Monitoreo
+    Zipkin[Zipkin<br/>Distributed Tracing<br/>:9411]
+    
+    %% Red Docker
+    subgraph Network["Docker Network: microservices-net"]
+        Gateway
+        Frontend
+        AuthAPI
+        UsersAPI
+        TodosAPI
+        LogProcessor
+        Redis
+        Zipkin
+    end
+    
+    %% Flujos principales
+    Client -->|HTTP :80| Gateway
+    Client -->|Zipkin UI :9411| Zipkin
+    
+    %% API Gateway routing
+    Gateway -->|"/api/auth/*"| AuthAPI
+    Gateway -->|"/api/users/*"| UsersAPI
+    Gateway -->|"/api/todos/*"| TodosAPI
+    Gateway -->|"/api/zipkin/*"| Zipkin
+    Gateway -->|"/* (SPA)"| Frontend
+    
+    %% Dependencias entre servicios
+    AuthAPI -.->|"User validation"| UsersAPI
+    UsersAPI -->|"Tracing"| Zipkin
+    AuthAPI -->|"Tracing"| Zipkin
+    TodosAPI -->|"Tracing"| Zipkin
+    Frontend -->|"Tracing"| Zipkin
+    LogProcessor -->|"Tracing"| Zipkin
+    
+    %% Cache y almacenamiento
+    UsersAPI <-->|"Cache"| Redis
+    TodosAPI <-->|"Cache"| Redis
+    TodosAPI -->|"Pub/Sub"| Redis
+    Redis -->|"Subscribe"| LogProcessor
+    
+    %% Health Checks
+    Gateway -.->|"Health Check"| UsersAPI
+    Gateway -.->|"Health Check"| TodosAPI
+    
+    %% Estilos
+    classDef client fill:#e1f5fe
+    classDef gateway fill:#fff3e0
+    classDef api fill:#f3e5f5
+    classDef storage fill:#e8f5e8
+    classDef monitor fill:#fce4ec
+    classDef frontend fill:#e3f2fd
+    
+    class Client client
+    class Gateway gateway
+    class AuthAPI,UsersAPI,TodosAPI api
+    class Redis storage
+    class Zipkin monitor
+    class Frontend,LogProcessor frontend
 ```
-Cliente → API Gateway (Nginx) → Load Balancer → Microservicios Backend
-                                      ↓
-                 Redis Cache ←→ APIs ←→ Zipkin Tracing
+
+### Flujo de Datos Detallado
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente
+    participant G as API Gateway
+    participant A as Auth API
+    participant U as Users API
+    participant T as Todos API
+    participant R as Redis
+    participant Z as Zipkin
+    participant L as Log Processor
+
+    %% Flujo de autenticación
+    C->>G: POST /api/auth/login
+    G->>A: Forward request
+    A->>U: Validate user credentials
+    U->>R: Check user cache
+    R-->>U: User data or miss
+    U-->>A: User validation result
+    A->>Z: Send trace data
+    A-->>G: JWT Token
+    G-->>C: Authentication response
+
+    %% Flujo de operaciones con TODOs
+    C->>G: GET /api/todos/ (with JWT)
+    G->>T: Forward authenticated request
+    T->>R: Check todos cache
+    R-->>T: Cached todos or miss
+    T->>R: Publish log message
+    R->>L: Notify log processor
+    T->>Z: Send trace data
+    T-->>G: Todos response
+    G-->>C: Todos data
+
+    %% Procesamiento asíncrono de logs
+    L->>R: Subscribe to log_channel
+    L->>Z: Send processing traces
 ```
 
 ## Patrones de Diseño Implementados
