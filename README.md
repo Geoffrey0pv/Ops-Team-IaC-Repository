@@ -86,12 +86,12 @@ graph TB
     Gateway -.->|"Health Check"| TodosAPI
     
     %% Estilos
-    classDef client fill:#e1f5fe
-    classDef gateway fill:#fff3e0
-    classDef api fill:#f3e5f5
-    classDef storage fill:#e8f5e8
-    classDef monitor fill:#fce4ec
-    classDef frontend fill:#e3f2fd
+    classDef client fill:#2196F3,stroke:#1976D2,stroke-width:2px,color:#fff
+    classDef gateway fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#fff
+    classDef api fill:#9C27B0,stroke:#7B1FA2,stroke-width:2px,color:#fff
+    classDef storage fill:#4CAF50,stroke:#388E3C,stroke-width:2px,color:#fff
+    classDef monitor fill:#E91E63,stroke:#C2185B,stroke-width:2px,color:#fff
+    classDef frontend fill:#00BCD4,stroke:#0097A7,stroke-width:2px,color:#fff
     
     class Client client
     class Gateway gateway
