@@ -2,44 +2,42 @@ pipeline {
     agent any
 
     stages {
-        stage('CI: Validación de Scripts') {
+        // ETAPA 1: Se ejecuta en el agente principal
+        stage('Validar Docker Compose') {
             steps {
-                echo "Validando la calidad del código de infraestructura..."
-                
-                // 1. Validar la sintaxis del archivo Docker Compose
+                echo "Validando la sintaxis de docker-compose.yml..."
                 sh 'docker-compose -f docker-compose.yml config'
                 echo "Sintaxis de docker-compose.yml es válida."
-                
-                // 2. Usar un contenedor con shellcheck para analizar los scripts de Bash
-                // Esto es una buena práctica para no tener que instalarlo en el agente
-                docker.image('koalaman/shellcheck:stable').inside {
-                    sh 'shellcheck *.sh'
-                }
+            }
+        }
+
+        // ETAPA 2: Se ejecuta DENTRO de un contenedor de shellcheck
+        stage('Validar Scripts de Bash') {
+            // Se define un agente específico solo para esta etapa
+            agent {
+                docker { image 'koalaman/shellcheck:stable' }
+            }
+            steps {
+                echo "Analizando scripts de Bash con shellcheck..."
+                // Los comandos ahora se ejecutan dentro del contenedor 'shellcheck'
+                sh 'shellcheck *.sh'
                 echo "Análisis de scripts de Bash completado sin errores."
             }
         }
 
         stage('CD: Despliegue del Entorno de Simulación') {
-            when {
-                branch 'main'
-            }
+            when { branch 'main' }
             steps {
                 echo "Desplegando el ecosistema completo para pruebas..."
-                // Otorgar permisos de ejecución a los scripts
                 sh 'chmod +x *.sh'
-                
-                // Ejecutar el script de setup
                 sh './setup.sh'
             }
         }
 
         stage('CD: Pruebas de Patrones de Diseño') {
-            when {
-                branch 'main'
-            }
+            when { branch 'main' }
             steps {
                 echo "Ejecutando pruebas de integración sobre la infraestructura..."
-                // El script test-patterns.sh devolverá un código de salida 0 si todo va bien
                 sh './test-patterns.sh'
             }
         }
