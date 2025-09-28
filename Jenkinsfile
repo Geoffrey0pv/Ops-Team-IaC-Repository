@@ -2,37 +2,43 @@ pipeline {
     agent any
 
     stages {
-        stage('CI: Validación de Código') {
+        // Etapa 1: Se ejecuta en el agente principal (el que corre Jenkins)
+        stage('Validar Docker Compose') {
             steps {
-                
-                script {
-                    echo "Validando la calidad del código de infraestructura..."
-                    
-                    // 1. Validar la sintaxis del archivo Docker Compose
-                    sh 'docker-compose -f docker-compose.yml config'
-                    echo "Sintaxis de docker-compose.yml es válida."
-                    
-                    // 2. Usar un contenedor con shellcheck para analizar los scripts de Bash
-                    // El bloque 'script' permite usar la sintaxis docker.image().inside() de forma segura.
-                    docker.image('koalaman/shellcheck:stable').inside {
-                        sh 'shellcheck *.sh'
-                    }
-                    echo "Análisis de scripts de Bash completado sin errores."
-                }
+                echo "Validando la sintaxis de docker-compose.yml..."
+                sh 'docker-compose -f docker-compose.yml config'
+                echo "Sintaxis de docker-compose.yml es válida."
             }
         }
 
-        stage('CD: Despliegue y Pruebas de Integración') {
+        // Etapa 2: Se ejecuta DENTRO de un contenedor de shellcheck
+        stage('Validar Scripts de Bash') {
+            // Se define un agente específico solo para esta etapa
+            agent {
+                docker { image 'koalaman/shellcheck:stable' }
+            }
+            steps {
+                echo "Analizando scripts de Bash con shellcheck..."
+                // Este comando se ejecuta dentro del contenedor 'shellcheck' sobre el workspace clonado
+                sh 'shellcheck *.sh'
+                echo "Análisis de scripts de Bash completado sin errores."
+            }
+        }
+
+        // Etapas de CD: Se ejecutan en el agente principal
+        stage('CD: Despliegue y Pruebas') {
             when {
                 branch 'main'
             }
             steps {
                 echo "Iniciando despliegue y pruebas de integración..."
-                
+                // Otorgar permisos de ejecución a todos los scripts
                 sh 'chmod +x *.sh'
                 
+                // Ejecutar el script de setup para levantar el entorno
                 sh './setup.sh'
 
+                // Ejecutar el script de pruebas de patrones
                 sh './test-patterns.sh'
             }
         }
@@ -40,11 +46,9 @@ pipeline {
 
     post {
         always {
-            script {
-                echo "Limpiando el entorno del agente de Jenkins..."
-                sh 'chmod +x cleanup.sh'
-                sh './cleanup.sh --all --force'
-            }
+            echo "Limpiando el entorno del agente de Jenkins..."
+            sh 'chmod +x cleanup.sh || true'
+            sh './cleanup.sh --all --force'
         }
     }
 }
