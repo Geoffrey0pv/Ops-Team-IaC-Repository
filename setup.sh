@@ -99,11 +99,17 @@ check_ports() {
     
     if [ ${#busy_ports[@]} -gt 0 ]; then
         show_warning "Los siguientes puertos están ocupados: ${busy_ports[*]}"
-        echo -e "${BLUE}¿Deseas continuar? Los servicios podrían no iniciarse correctamente. (y/N)${NC}"
-        read -r response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            show_info "Setup cancelado por el usuario"
-            exit 0
+        
+        # En CI/Jenkins, continuar automáticamente
+        if [ "$CI" = "true" ] || [ -n "$JENKINS_URL" ]; then
+            show_info "Ejecutándose en CI - continuando automáticamente"
+        else
+            echo -e "${BLUE}¿Deseas continuar? Los servicios podrían no iniciarse correctamente. (y/N)${NC}"
+            read -r response
+            if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                show_info "Setup cancelado por el usuario"
+                exit 0
+            fi
         fi
     else
         show_success "Todos los puertos necesarios están disponibles"
