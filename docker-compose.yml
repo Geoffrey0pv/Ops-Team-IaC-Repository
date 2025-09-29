@@ -84,7 +84,7 @@ services:
 
   # 🖥️ FRONTEND - Vue.js SPA
   frontend:
-    image: geoffrey0pv/frontend:latest-master
+    image: geoffrey0pv/frontend-app:latest-master
     networks:
       - microservices-network
     environment:

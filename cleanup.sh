@@ -218,7 +218,7 @@ cleanup_images() {
         "geoffrey0pv/auth-api:latest-master"
         "geoffrey0pv/users-api:latest-master"
         "geoffrey0pv/todos-api:latest-master"
-        "geoffrey0pv/frontend:latest-master"
+        "geoffrey0pv/frontend-app:latest-master"
         "geoffrey0pv/log-message-processor:latest-master"
     )
     

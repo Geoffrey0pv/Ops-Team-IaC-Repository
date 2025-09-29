@@ -20,10 +20,10 @@ NC='\033[0m' # No Color
 PROJECT_NAME="Microservice Infrastructure"
 VERSION="1.0.0"
 DOCKER_IMAGES=(
-    "    "geoffrey0pv/auth-api:latest-master""
-    "    "geoffrey0pv/users-api:latest-master""
-    "    "geoffrey0pv/todos-api:latest-master""
-    "    "geoffrey0pv/frontend:latest-master""
+    "geoffrey0pv/auth-api:latest-master"
+    "geoffrey0pv/users-api:latest-master"
+    "geoffrey0pv/todos-api:latest-master"
+    "geoffrey0pv/frontend-app:latest-master"
     "geoffrey0pv/log-message-processor:latest-master"
 )
 
