@@ -11,11 +11,11 @@ Este repositorio implementa una arquitectura de microservicios cloud-native util
 | Servicio | Imagen Docker | Puerto | Función |
 |----------|---------------|--------|---------|
 | API Gateway | nginx:1.29.1 | 80, 8888 | Proxy reverso y load balancer |
-| Users API | geoffrey0pv/users-api:latest | 8083 | Gestión de usuarios con cache Redis |
-| Auth API | geoffrey0pv/auth-api:latest | 8000 | Autenticación JWT |
-| Todos API | geoffrey0pv/todos-api:latest | 8082 | CRUD de tareas |
-| Frontend | geoffrey0pv/frontend:latest | 8080 | Interfaz de usuario Vue.js |
-| Log Processor | geoffrey0pv/log-message-processor:latest | - | Procesamiento de logs Python |
+| Users API | geoffrey0pv/users-api:latest-master | 8083 | Gestión de usuarios con cache Redis |
+| Auth API | geoffrey0pv/auth-api:latest-master | 8000 | Autenticación JWT |
+| Todos API | geoffrey0pv/todos-api:latest-master | 8082 | CRUD de tareas |
+| Frontend | geoffrey0pv/frontend:latest-master | 8080 | Interfaz de usuario Vue.js |
+| Log Processor | geoffrey0pv/log-message-processor:latest-master | - | Procesamiento de logs Python |
 | Redis | redis:7.0-alpine | 6379 | Base de datos en memoria y cache |
 | Zipkin | openzipkin/zipkin:2.23.19 | 9411 | Distributed tracing |
 

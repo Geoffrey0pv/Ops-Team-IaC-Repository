@@ -215,11 +215,11 @@ cleanup_images() {
     
     # Imágenes del proyecto
     local project_images=(
-        "geoffrey0pv/auth-api:latest"
-        "geoffrey0pv/users-api:latest"
-        "geoffrey0pv/todos-api:latest"
-        "geoffrey0pv/frontend:latest"
-        "geoffrey0pv/log-message-processor:latest"
+        "geoffrey0pv/auth-api:latest-master"
+        "geoffrey0pv/users-api:latest-master"
+        "geoffrey0pv/todos-api:latest-master"
+        "geoffrey0pv/frontend:latest-master"
+        "geoffrey0pv/log-message-processor:latest-master"
     )
     
     echo -e "${BLUE}Eliminando imágenes del proyecto...${NC}"

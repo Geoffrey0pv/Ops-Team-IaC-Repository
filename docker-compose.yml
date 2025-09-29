@@ -27,7 +27,7 @@ services:
 
   # 🔐 AUTHENTICATION API - Go + JWT
   auth-api:
-    image: raulqode/auth-api:latest
+    image: geoffrey0pv/auth-api:latest-master
     environment:
       - USERS_API_ADDRESS=http://users-api:8083
       - AUTH_API_PORT=8000
@@ -41,7 +41,7 @@ services:
 
   # 👥 USERS API - Spring Boot + Redis Cache
   users-api:
-    image: raulqode/users-api:latest
+    image: geoffrey0pv/users-api:latest-master
     environment:
       - SERVER_PORT=8083
       - JWT_SECRET=PRFT
@@ -62,7 +62,7 @@ services:
 
   # ✅ TODOS API - Node.js + Express
   todos-api:
-    image: raulqode/todos-api:latest
+    image: geoffrey0pv/todos-api:latest-master
     environment:
       - REDIS_URL=redis://redis:6379
       - TODO_API_PORT=8082
@@ -84,7 +84,7 @@ services:
 
   # 🖥️ FRONTEND - Vue.js SPA
   frontend:
-    image: raulqode/frontend:latest
+    image: geoffrey0pv/frontend:latest-master
     networks:
       - microservices-network
     environment:
@@ -97,7 +97,7 @@ services:
 
   # 📝 LOG MESSAGE PROCESSOR - Python + Redis
   log-message-processor:
-    image: raulqode/log-message-processor:latest
+    image: geoffrey0pv/log-message-processor:latest-master
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

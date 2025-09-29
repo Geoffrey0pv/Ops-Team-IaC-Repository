@@ -106,11 +106,11 @@ pull_images() {
     show_step "Descargando imágenes"
     
     local images=(
-        "raulqode/auth-api:latest"
-        "raulqode/users-api:latest"
-        "raulqode/todos-api:latest"
-        "raulqode/frontend:latest"
-        "raulqode/log-message-processor:latest"
+        "geoffrey0pv/auth-api:latest-master"
+        "geoffrey0pv/users-api:latest-master"
+        "geoffrey0pv/todos-api:latest-master"
+        "geoffrey0pv/frontend:latest-master"
+        "geoffrey0pv/log-message-processor:latest-master"
         "nginx:1.29.1"
         "redis:7.0-alpine"
         "openzipkin/zipkin:2.23.19"
