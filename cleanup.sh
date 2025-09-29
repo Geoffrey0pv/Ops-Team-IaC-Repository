@@ -215,11 +215,11 @@ cleanup_images() {
     
     # Imágenes del proyecto
     local project_images=(
-        "raulqode/auth-api:latest"
-        "raulqode/users-api:latest"
-        "raulqode/todos-api:latest"
-        "raulqode/frontend:latest"
-        "raulqode/log-message-processor:latest"
+        "geoffrey0pv/auth-api:latest"
+        "geoffrey0pv/users-api:latest"
+        "geoffrey0pv/todos-api:latest"
+        "geoffrey0pv/frontend:latest"
+        "geoffrey0pv/log-message-processor:latest"
     )
     
     echo -e "${BLUE}Eliminando imágenes del proyecto...${NC}"
@@ -288,7 +288,7 @@ verify_cleanup() {
     
     # Verificar imágenes (si se limpiaron)
     if [ "$CLEANUP_IMAGES" = true ]; then
-        remaining_images=$(docker images -q | grep -f <(echo -e "raulqode/auth-api\nraulqode/users-api\nraulqode/todos-api\nraulqode/frontend\nraulqode/log-message-processor") | wc -l || echo "0")
+        remaining_images=$(docker images -q | grep -f <(echo -e "geoffrey0pv/auth-api\ngeoffrey0pv/users-api\ngeoffrey0pv/todos-api\ngeoffrey0pv/frontend\ngeoffrey0pv/log-message-processor") | wc -l || echo "0")
         if [ "$remaining_images" -eq 0 ]; then
             show_success "Imágenes del proyecto eliminadas"
         else
