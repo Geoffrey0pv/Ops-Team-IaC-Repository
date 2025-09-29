@@ -91,7 +91,7 @@ pipeline {
                             
                             # Verificar que Docker puede usar estos puertos
                             echo "Verificando disponibilidad de puertos para Docker..."
-                        '''                            echo "Verificando disponibilidad de puertos para Docker..."
+                        '''
 
                         
                         // Ejecutar setup con script específico para CI
